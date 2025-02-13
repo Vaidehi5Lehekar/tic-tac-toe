@@ -16,10 +16,12 @@ for (let i = 0; i < 9; i++) {
 // Handle click event
 function handleCellClick(event) {
     if (!gameActive) return;
-
+    
     const cell = event.target;
     if (cell.textContent === "") {
         cell.textContent = currentPlayer;
+        updateGame(cell.dataset.index, currentPlayer);
+        
         if (checkWinner()) {
             setTimeout(() => {
                 alert(currentPlayer + " wins!");
@@ -30,8 +32,6 @@ function handleCellClick(event) {
                 alert("It's a draw!");
                 goToValentinePage();
             }, 300);
-        } else {
-            currentPlayer = currentPlayer === "X" ? "O" : "X";
         }
     }
 }
