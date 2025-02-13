@@ -1,0 +1,30 @@
+body {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background-color: pink;
+}
+
+.valentine-container {
+    margin-top: 50px;
+}
+
+.valentine-photo {
+    width: 200px;
+    height: auto;
+    border-radius: 10px;
+}
+
+.message {
+    font-size: 1.5em;
+    color: white;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
