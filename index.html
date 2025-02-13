@@ -12,35 +12,5 @@
     <div id="board"></div>
 </div>
 <script src="script.js"></script>
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-
-    const firebaseConfig = {
-    apiKey: "AIzaSyAob8fhIAdSZspikYYVlpu6snl7C29s1bc",
-    authDomain: "tic-tac-toe-22f89.firebaseapp.com",
-    projectId: "tic-tac-toe-22f89",
-    storageBucket: "tic-tac-toe-22f89.firebasestorage.app",
-    messagingSenderId: "451280945749",
-    appId: "1:451280945749:web:0a2f9aec3327d855d94adc",
-    measurementId: "G-T45GJ9P4ZN"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const gameRef = ref(db, "game");
-
-    function updateGame(index, player) {
-        set(gameRef, { index, player });
-    }
-
-    onValue(gameRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            cells[data.index].textContent = data.player;
-            currentPlayer = data.player === "X" ? "O" : "X";
-        }
-    });
-</script>
 </body>
 </html>
