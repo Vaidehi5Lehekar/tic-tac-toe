@@ -31,17 +31,17 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
         import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
-        // Your Firebase Config (replace with your own)
-       const firebaseConfig = {
-       apiKey: "AIzaSyAob8fhIAdSZspikYYVlpu6snl7C29s1bc",
-       authDomain: "tic-tac-toe-22f89.firebaseapp.com",
-       databaseURL: "https://tic-tac-toe-22f89-default-rtdb.firebaseio.com",
-       projectId: "tic-tac-toe-22f89",
-       storageBucket: "tic-tac-toe-22f89.firebasestorage.app",
-       messagingSenderId: "451280945749",
-       appId: "1:451280945749:web:0a2f9aec3327d855d94adc",
-       measurementId: "G-T45GJ9P4ZN"
-       };
+        // Your Firebase Config (Replace with your own)
+        const firebaseConfig = {
+    apiKey: "AIzaSyAob8fhIAdSZspikYYVlpu6snl7C29s1bc",
+    authDomain: "tic-tac-toe-22f89.firebaseapp.com",
+    databaseURL: "https://tic-tac-toe-22f89-default-rtdb.firebaseio.com",
+    projectId: "tic-tac-toe-22f89",
+    storageBucket: "tic-tac-toe-22f89.firebasestorage.app",
+    messagingSenderId: "451280945749",
+    appId: "1:451280945749:web:0a2f9aec3327d855d94adc",
+    measurementId: "G-T45GJ9P4ZN"
+    };
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
@@ -51,6 +51,24 @@
         let playerSymbol = null;  // "X" or "O"
         let currentPlayer = null;
         let cells = document.querySelectorAll(".cell");
+
+        // Winning combinations
+        const winningCombos = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],  // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],  // Columns
+            [0, 4, 8], [2, 4, 6]              // Diagonals
+        ];
+
+        // Function to check if there's a winner
+        function checkWinner(board) {
+            for (let combo of winningCombos) {
+                let [a, b, c] = combo;
+                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                    return board[a]; // Returns "X" or "O"
+                }
+            }
+            return null; // No winner yet
+        }
 
         // Function to join the game
         function joinGame() {
@@ -85,7 +103,7 @@
             });
         }
 
-        // Listen for changes to the game in Firebase
+        // Listen for game state updates
         onValue(gameRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -94,6 +112,13 @@
                     cell.textContent = data.board[index];
                 });
                 currentPlayer = data.currentPlayer;
+
+                // Check if there is a winner
+                let winner = checkWinner(data.board);
+                if (winner) {
+                    alert(`Player ${winner} wins! 🎉`);
+                    window.location.href = "valentine.html"; // Redirect to Valentine's page
+                }
             }
         });
 
@@ -114,3 +139,4 @@
 
 </body>
 </html>
+
