@@ -4,44 +4,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic-Tac-Toe</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .board { display: grid; grid-template-columns: repeat(3, 100px); grid-gap: 5px; justify-content: center; }
+        .cell { width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; font-size: 2em; border: 2px solid black; cursor: pointer; }
+    </style>
 </head>
 <body>
-<div id="game-container">
-    <h1>Tic-Tac-Toe</h1>
-    <div id="board"></div>
-</div>
-<script src="script.js"></script>
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-    import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
-    const firebaseConfig = {
-    apiKey: "AIzaSyAob8fhIAdSZspikYYVlpu6snl7C29s1bc",
-    authDomain: "tic-tac-toe-22f89.firebaseapp.com",
-    databaseURL: "https://tic-tac-toe-22f89-default-rtdb.firebaseio.com",
-    projectId: "tic-tac-toe-22f89",
-    storageBucket: "tic-tac-toe-22f89.firebasestorage.app",
-    messagingSenderId: "451280945749",
-    appId: "1:451280945749:web:0a2f9aec3327d855d94adc",
-    measurementId: "G-T45GJ9P4ZN"
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const auth = getAuth(app);
+    <h1>Online Tic-Tac-Toe</h1>
+    <div id="playerInfo">Connecting...</div>
+    <div class="board" id="board">
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
+    </div>
 
-    let playerId = null;
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
-    signInAnonymously(auth)
-        .then((userCredential) => {
-            playerId = userCredential.user.uid;
-            console.log("Signed in as:", playerId);
-        })
-        .catch((error) => {
-            console.error("Auth error:", error);
+        // Your Firebase Config (replace with your own)
+       const firebaseConfig = {
+       apiKey: "AIzaSyAob8fhIAdSZspikYYVlpu6snl7C29s1bc",
+       authDomain: "tic-tac-toe-22f89.firebaseapp.com",
+       databaseURL: "https://tic-tac-toe-22f89-default-rtdb.firebaseio.com",
+       projectId: "tic-tac-toe-22f89",
+       storageBucket: "tic-tac-toe-22f89.firebasestorage.app",
+       messagingSenderId: "451280945749",
+       appId: "1:451280945749:web:0a2f9aec3327d855d94adc",
+       measurementId: "G-T45GJ9P4ZN"
+       };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const gameRef = ref(db, "game");
+
+        let playerSymbol = null;  // "X" or "O"
+        let currentPlayer = null;
+        let cells = document.querySelectorAll(".cell");
+
+        // Function to join the game
+        function joinGame() {
+            get(gameRef).then(snapshot => {
+                if (!snapshot.exists()) {
+                    // First player joins as "X"
+                    set(gameRef, { board: Array(9).fill(""), currentPlayer: "X", players: { X: true, O: false } });
+                    playerSymbol = "X";
+                } else {
+                    const data = snapshot.val();
+                    if (!data.players.O) {
+                        // Second player joins as "O"
+                        playerSymbol = "O";
+                        set(ref(db, "game/players/O"), true);
+                    } else {
+                        alert("Game is full! Try again later.");
+                    }
+                }
+                document.getElementById("playerInfo").textContent = `You are Player ${playerSymbol}`;
+            });
+        }
+
+        // Function to update the game board in Firebase
+        function updateGame(index) {
+            get(gameRef).then(snapshot => {
+                const data = snapshot.val();
+                if (data.currentPlayer === playerSymbol && data.board[index] === "") {
+                    data.board[index] = playerSymbol;
+                    data.currentPlayer = playerSymbol === "X" ? "O" : "X"; // Switch turn
+                    set(gameRef, data);
+                }
+            });
+        }
+
+        // Listen for changes to the game in Firebase
+        onValue(gameRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                // Update board UI
+                cells.forEach((cell, index) => {
+                    cell.textContent = data.board[index];
+                });
+                currentPlayer = data.currentPlayer;
+            }
         });
 
-</script>
+        // Handle cell clicks
+        cells.forEach(cell => {
+            cell.addEventListener("click", function() {
+                if (playerSymbol === currentPlayer) {
+                    updateGame(this.dataset.index);
+                } else {
+                    alert("Wait for your turn!");
+                }
+            });
+        });
+
+        // Join the game when the page loads
+        joinGame();
+    </script>
+
 </body>
 </html>
