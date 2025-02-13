@@ -18,15 +18,15 @@
     import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-        databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_PROJECT_ID.appspot.com",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyAob8fhIAdSZspikYYVlpu6snl7C29s1bc",
+    authDomain: "tic-tac-toe-22f89.firebaseapp.com",
+    databaseURL: "https://tic-tac-toe-22f89-default-rtdb.firebaseio.com",
+    projectId: "tic-tac-toe-22f89",
+    storageBucket: "tic-tac-toe-22f89.firebasestorage.app",
+    messagingSenderId: "451280945749",
+    appId: "1:451280945749:web:0a2f9aec3327d855d94adc",
+    measurementId: "G-T45GJ9P4ZN"
     };
-
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const auth = getAuth(app);
